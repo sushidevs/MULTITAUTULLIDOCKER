@@ -1,0 +1,44 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+# If variable $ADVANCED_GIT_BRANCH, set branch to $ADVANCED_GIT_BRANCH, otherwise, default to master
+mkdir /app/tautulli
+[ "$ADVANCED_GIT_BRANCH" ] || \
+	ADVANCED_GIT_BRANCH="main"
+
+[ "$ADVANCED_GIT_REPO" ] || \
+	ADVANCED_GIT_REPO="https://github.com/pazport/Tautullix2.git"
+
+INSTALL_FOLDER="/app/tautulli"
+
+# Install app
+[[ ! -d "${INSTALL_FOLDER}/.git" ]] && \
+	git clone --branch "$ADVANCED_GIT_BRANCH" "$ADVANCED_GIT_REPO" "${INSTALL_FOLDER}"
+
+# Permissions
+chown -R abc:abc \
+	/config \
+	"${INSTALL_FOLDER}"
+
+echo "[ ******** changing folder permission ********]"
+  mkdir -p \
+  /app \
+  /config \
+  /defaults \
+  /scripts
+chown abc:abc /app
+chown abc:abc /config
+chown abc:abc /defaults
+chown abc:abc /app
+chown abc:abc /scripts
+
+echo [making a systemlink of python. for Kill_Stream.py to work]
+sleep 2
+command ln -snf /usr/bin/python3 /usr/bin/python
+sleep 2
+echo [******** getting Kill_Stream script ********]
+sleep 2
+command cp -rf /etc/Kill_Stream.py /scripts
+sleep 2
+echo [******** Kill_stream is HERE :) ********]
+sleep 2
